@@ -8,3 +8,5 @@ go run main.go
 
 This will generate a random quadtree and generate an output
 visualisation in output.png.
+
+![Quadtree Visualisation](output.png)
