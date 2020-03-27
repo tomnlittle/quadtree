@@ -37,24 +37,23 @@ func drawQt(img draw.Image, qt *QuadTree, width, height float64) draw.Image {
 }
 
 func drawBBox(img draw.Image, bbox *BBox, width, height float64) draw.Image {
-	gc := draw2dimg.NewGraphicContext(img)
-	gc.SetFillColor(color.RGBA{0, 0, 0, 0})
-	gc.SetStrokeColor(color.RGBA{0xff, 0xff, 0xff, 0xff})
-	gc.SetLineWidth(1)
-
 	newX, newY := toCanvasCoordinates(bbox.CentreX, bbox.CentreY, width, height)
 
+	// Shift the centre of the bbox to the top left which is where
+	// we will start drawing the rectangle
 	shiftedX := newX - bbox.Width/2
 	shiftedY := newY - bbox.Height/2
 
-	// Draw the rectangle twice since the library likes
-	// to add an opacity to the bottom and right lines of the rectangle
-	draw2dkit.Rectangle(gc, shiftedX, shiftedY, shiftedX+bbox.Width, shiftedY+bbox.Height)
-	draw2dkit.Rectangle(gc, shiftedX, shiftedY, shiftedX+bbox.Width, shiftedY+bbox.Height)
+	gc := draw2dimg.NewGraphicContext(img)
+	gc.SetFillColor(color.Black)
+	gc.SetStrokeColor(color.RGBA{0xff, 0xff, 0xff, 0xff})
+	gc.SetLineWidth(1)
 
+	draw2dkit.Rectangle(gc, shiftedX, shiftedY, shiftedX+bbox.Width, shiftedY+bbox.Height)
 	gc.FillStroke()
-	gc.Close()
+	gc.Fill()
 
+	// Set the centre of the bbox to green
 	img.Set(int(newX), int(newY), color.RGBA{0x00, 0xff, 0x00, 0xff})
 
 	return img
