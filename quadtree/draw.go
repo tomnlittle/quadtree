@@ -1,16 +1,20 @@
-package main
+package quadtree
 
 import (
 	"image"
 	"image/color"
 	"image/draw"
-	"quadtree/quadtree"
 
 	"github.com/llgcode/draw2d/draw2dimg"
 	"github.com/llgcode/draw2d/draw2dkit"
 )
 
-func DrawQuadtree(qt *quadtree.QuadTree, outputFilename string) {
+// DrawQuadTree traverses the quadtree and creates an image
+// of the quadtree and all of its points and bboxes. Points
+// are drawn as red dots, green dots are the centres of the
+// bounding boxes and the white lines are the borders of the
+// bounding boxes
+func DrawQuadTree(qt *QuadTree, outputFilename string) {
 	bbox := qt.BBox()
 	width := bbox.Width()
 	height := bbox.Height()
@@ -25,20 +29,20 @@ func DrawQuadtree(qt *quadtree.QuadTree, outputFilename string) {
 	draw2dimg.SaveToPngFile(outputFilename, result)
 }
 
-func drawQt(img draw.Image, qt *quadtree.QuadTree, width, height float64) draw.Image {
+func drawQt(img draw.Image, qt *QuadTree, width, height float64) draw.Image {
 	img = drawBBox(img, qt.BBox(), width, height)
 
-	if qt.HasSubdivided() {
-		img = drawQt(img, qt.TopLeft, width, height)
-		img = drawQt(img, qt.TopRight, width, height)
-		img = drawQt(img, qt.BottomLeft, width, height)
-		img = drawQt(img, qt.BottomRight, width, height)
+	if qt.hasSubdivided() {
+		img = drawQt(img, qt.topLeft, width, height)
+		img = drawQt(img, qt.topRight, width, height)
+		img = drawQt(img, qt.bottomLeft, width, height)
+		img = drawQt(img, qt.bottomRight, width, height)
 	}
 
 	return img
 }
 
-func drawBBox(img draw.Image, bbox quadtree.BBox, width, height float64) draw.Image {
+func drawBBox(img draw.Image, bbox BBox, width, height float64) draw.Image {
 	p := bbox.Centre()
 	newPt := getCanvasPoint(p, width, height)
 
@@ -62,13 +66,13 @@ func drawBBox(img draw.Image, bbox quadtree.BBox, width, height float64) draw.Im
 	return img
 }
 
-func drawPoint(img draw.Image, pt quadtree.Point, width, height float64) draw.Image {
+func drawPoint(img draw.Image, pt Point, width, height float64) draw.Image {
 	newPt := getCanvasPoint(pt, width, height)
 	img.Set(int(newPt.X), int(newPt.Y), color.RGBA{0xff, 0x00, 0x00, 0xff})
 	return img
 }
 
-func getCanvasPoint(p quadtree.Point, width, height float64) quadtree.Point {
+func getCanvasPoint(p Point, width, height float64) Point {
 	x := p.X + width/2
 	y := p.Y - height/2
 
@@ -76,5 +80,5 @@ func getCanvasPoint(p quadtree.Point, width, height float64) quadtree.Point {
 		y = -y
 	}
 
-	return quadtree.Point{x, y}
+	return Point{x, y}
 }

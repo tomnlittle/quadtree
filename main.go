@@ -23,7 +23,7 @@ func main() {
 		})
 	}
 
-	DrawQuadtree(qt, outputFilename)
+	quadtree.DrawQuadTree(qt, outputFilename)
 }
 
 func randomCoordinate(bboxSize float64) float64 {
