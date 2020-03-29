@@ -27,14 +27,15 @@ func (b BBox) Height() float64 {
 }
 
 // Centre returns the (x,y) centre of the bbox
-func (b BBox) Centre() (x, y float64) {
-	return b.xMin + b.Width()/2, b.yMin + b.Height()/2
+func (b BBox) Centre() Point {
+	return Point{b.xMin + b.Width()/2, b.yMin + b.Height()/2}
 }
 
 // ContainsPoint checks whether the provided point is within
 // the bounding box
 func (b BBox) ContainsPoint(p *Point) bool {
-	return p.X <= b.xMax &&
+	return p != nil &&
+		p.X <= b.xMax &&
 		p.X >= b.xMin &&
 		p.Y <= b.yMax &&
 		p.Y >= b.yMin
@@ -43,7 +44,8 @@ func (b BBox) ContainsPoint(p *Point) bool {
 // ContainsBBox checks if the current bbox is entirely
 // within the second bbox
 func (b BBox) ContainsBBox(b2 *BBox) bool {
-	return b.xMin <= b2.xMin &&
+	return b2 != nil &&
+		b.xMin <= b2.xMin &&
 		b.xMax >= b2.xMax &&
 		b.yMin <= b2.yMin &&
 		b.yMax >= b2.yMax
@@ -52,6 +54,7 @@ func (b BBox) ContainsBBox(b2 *BBox) bool {
 // IntersectsBBox checks if the bbox intersects with the second
 // bounding box
 func (b BBox) IntersectsBBox(b2 *BBox) bool {
-	return b.yMax >= b2.yMin && b2.yMax >= b.yMin &&
+	return b2 != nil &&
+		b.yMax >= b2.yMin && b2.yMax >= b.yMin &&
 		b.xMax >= b2.xMin && b2.xMax >= b.xMin
 }

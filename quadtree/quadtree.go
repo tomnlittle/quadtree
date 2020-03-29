@@ -6,47 +6,64 @@ type QuadTree struct {
 
 	points Points
 
-	subdivided bool
-
-	topLeft     *QuadTree
-	topRight    *QuadTree
-	bottomLeft  *QuadTree
-	bottomRight *QuadTree
+	TopLeft     *QuadTree
+	TopRight    *QuadTree
+	BottomLeft  *QuadTree
+	BottomRight *QuadTree
 }
 
 // NewQuadTree creates a new quadtree
-func NewQuadTree(region *BBox, capacity int) *QuadTree {
+func NewQuadTree(bbox *BBox, capacity int) *QuadTree {
+	if bbox == nil || capacity <= 0 {
+		return nil
+	}
+
 	return &QuadTree{
-		bbox:     region,
+		bbox:     bbox,
 		capacity: capacity,
 	}
 }
 
+// BBox returns a copy of the quadtree's bounding box
+func (q QuadTree) BBox() BBox {
+	return *q.bbox
+}
+
+// IsSubdivided evalulates whether the quadtree has been
+// subdivided
+func (q QuadTree) IsSubdivided() bool {
+	return q.TopLeft != nil
+}
+
 // CountPoints returns the total number of points in the tree
 func (q QuadTree) CountPoints() int {
-	var length int
-	if q.subdivided {
-		length += q.topLeft.CountPoints()
-		length += q.topRight.CountPoints()
-		length += q.bottomLeft.CountPoints()
-		length += q.bottomRight.CountPoints()
+	length := len(q.points)
+	if q.IsSubdivided() {
+		length += q.TopLeft.CountPoints()
+		length += q.TopRight.CountPoints()
+		length += q.BottomLeft.CountPoints()
+		length += q.BottomRight.CountPoints()
 	}
 
-	return len(q.points) + length
+	return length
 }
 
 // GetPointsWithin returns the points that are contained by the
 // input BBox
 func (q QuadTree) GetPointsWithin(r *BBox) Points {
+	if r == nil {
+		return Points{}
+	}
+
 	if !q.bbox.IntersectsBBox(r) {
 		return Points{}
 	}
 
-	if q.subdivided {
-		found := q.topLeft.GetPointsWithin(r)
-		found = append(found, q.topRight.GetPointsWithin(r)...)
-		found = append(found, q.bottomLeft.GetPointsWithin(r)...)
-		found = append(found, q.bottomRight.GetPointsWithin(r)...)
+	if q.IsSubdivided() {
+		found := q.TopLeft.GetPointsWithin(r)
+		found = append(found, q.TopRight.GetPointsWithin(r)...)
+		found = append(found, q.BottomLeft.GetPointsWithin(r)...)
+		found = append(found, q.BottomRight.GetPointsWithin(r)...)
 		return found
 	}
 
@@ -65,17 +82,21 @@ func (q QuadTree) GetPointsWithin(r *BBox) Points {
 
 // Insert adds a point to the quadtree
 func (q *QuadTree) Insert(p *Point) bool {
+	if p == nil {
+		return false
+	}
+
 	if !q.bbox.ContainsPoint(p) {
 		return false
 	}
 
-	if !q.subdivided && len(q.points) < q.capacity {
+	if !q.IsSubdivided() && len(q.points) < q.capacity {
 		q.points = append(q.points, p)
 		return true
 	}
 
 	// otherwise we should subdivide if we haven't already
-	if !q.subdivided {
+	if !q.IsSubdivided() {
 		q.subdivide()
 
 		// re-insert all the points back into the quadtree
@@ -90,40 +111,38 @@ func (q *QuadTree) Insert(p *Point) bool {
 }
 
 func (q QuadTree) insertIntoSubdivisions(p *Point) bool {
-	return q.topLeft.Insert(p) ||
-		q.topRight.Insert(p) ||
-		q.bottomLeft.Insert(p) ||
-		q.bottomRight.Insert(p)
+	return q.TopLeft.Insert(p) ||
+		q.TopRight.Insert(p) ||
+		q.BottomLeft.Insert(p) ||
+		q.BottomRight.Insert(p)
 }
 
 func (q *QuadTree) subdivide() {
-	q.topLeft = NewQuadTree(NewBBox(
+	q.TopLeft = NewQuadTree(NewBBox(
 		q.bbox.xMin,
 		q.bbox.xMax-q.bbox.Width()/2,
 		q.bbox.yMin+q.bbox.Height()/2,
 		q.bbox.yMax,
 	), q.capacity)
 
-	q.topRight = NewQuadTree(NewBBox(
+	q.TopRight = NewQuadTree(NewBBox(
 		q.bbox.xMin+q.bbox.Width()/2,
 		q.bbox.xMax,
 		q.bbox.yMin+q.bbox.Height()/2,
 		q.bbox.yMax,
 	), q.capacity)
 
-	q.bottomLeft = NewQuadTree(NewBBox(
+	q.BottomLeft = NewQuadTree(NewBBox(
 		q.bbox.xMin,
 		q.bbox.xMax-q.bbox.Width()/2,
 		q.bbox.yMin,
 		q.bbox.yMax-q.bbox.Height()/2,
 	), q.capacity)
 
-	q.bottomRight = NewQuadTree(NewBBox(
+	q.BottomRight = NewQuadTree(NewBBox(
 		q.bbox.xMin+q.bbox.Width()/2,
 		q.bbox.xMax,
 		q.bbox.yMin,
 		q.bbox.yMax-q.bbox.Height()/2,
 	), q.capacity)
-
-	q.subdivided = true
 }

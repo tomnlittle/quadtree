@@ -23,7 +23,7 @@ func main() {
 		})
 	}
 
-	quadtree.DrawQuadtree(qt, outputFilename)
+	DrawQuadtree(qt, outputFilename)
 }
 
 func randomNumber() float64 {
