@@ -29,16 +29,16 @@ func (q QuadTree) BBox() BBox {
 	return *q.bbox
 }
 
-// IsSubdivided evalulates whether the quadtree has been
+// HasSubdivided evalulates whether the quadtree has been
 // subdivided
-func (q QuadTree) IsSubdivided() bool {
+func (q QuadTree) HasSubdivided() bool {
 	return q.TopLeft != nil
 }
 
 // CountPoints returns the total number of points in the tree
 func (q QuadTree) CountPoints() int {
 	length := len(q.points)
-	if q.IsSubdivided() {
+	if q.HasSubdivided() {
 		length += q.TopLeft.CountPoints()
 		length += q.TopRight.CountPoints()
 		length += q.BottomLeft.CountPoints()
@@ -59,7 +59,7 @@ func (q QuadTree) GetPointsWithin(r *BBox) Points {
 		return Points{}
 	}
 
-	if q.IsSubdivided() {
+	if q.HasSubdivided() {
 		found := q.TopLeft.GetPointsWithin(r)
 		found = append(found, q.TopRight.GetPointsWithin(r)...)
 		found = append(found, q.BottomLeft.GetPointsWithin(r)...)
@@ -90,13 +90,13 @@ func (q *QuadTree) Insert(p *Point) bool {
 		return false
 	}
 
-	if !q.IsSubdivided() && len(q.points) < q.capacity {
+	if !q.HasSubdivided() && len(q.points) < q.capacity {
 		q.points = append(q.points, p)
 		return true
 	}
 
 	// otherwise we should subdivide if we haven't already
-	if !q.IsSubdivided() {
+	if !q.HasSubdivided() {
 		q.subdivide()
 
 		// re-insert all the points back into the quadtree

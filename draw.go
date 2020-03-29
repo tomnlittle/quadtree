@@ -28,7 +28,7 @@ func DrawQuadtree(qt *quadtree.QuadTree, outputFilename string) {
 func drawQt(img draw.Image, qt *quadtree.QuadTree, width, height float64) draw.Image {
 	img = drawBBox(img, qt.BBox(), width, height)
 
-	if qt.IsSubdivided() {
+	if qt.HasSubdivided() {
 		img = drawQt(img, qt.TopLeft, width, height)
 		img = drawQt(img, qt.TopRight, width, height)
 		img = drawQt(img, qt.BottomLeft, width, height)
