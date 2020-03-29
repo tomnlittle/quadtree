@@ -2,12 +2,10 @@ package quadtree
 
 // BBox defines a bounding box
 type BBox struct {
-	xMin, xMax float64
-	yMin, yMax float64
-	// CentreX,CentreY are the centre of the BBox
+	xMin, xMax       float64
+	yMin, yMax       float64
 	CentreX, CentreY float64
-	// Width/Height are 1/2 +/- the X/Y coordinate
-	Width, Height float64
+	width, height    float64
 }
 
 func NewBBox(centreX, centreY, width, height float64) *BBox {
@@ -18,8 +16,8 @@ func NewBBox(centreX, centreY, width, height float64) *BBox {
 		yMin:    centreY - height/2,
 		CentreX: centreX,
 		CentreY: centreY,
-		Width:   width,
-		Height:  height,
+		width:   width,
+		height:  height,
 	}
 }
 

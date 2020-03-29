@@ -10,27 +10,28 @@ import (
 )
 
 func DrawQuadtree(qt *QuadTree, outputFilename string) {
-	width := qt.rootRegion.Width
-	height := qt.rootRegion.Height
+	width := qt.bbox.width
+	height := qt.bbox.height
 	dest := image.NewRGBA(image.Rect(0, 0, int(width), int(height)))
 
 	result := drawQt(dest, qt, width, height)
+
+	points := qt.GetPointsWithin(qt.bbox)
+	for _, pt := range points {
+		result = drawPoint(result, pt, width, height)
+	}
 
 	draw2dimg.SaveToPngFile(outputFilename, result)
 }
 
 func drawQt(img draw.Image, qt *QuadTree, width, height float64) draw.Image {
-	img = drawBBox(img, qt.rootRegion, width, height)
+	img = drawBBox(img, qt.bbox, width, height)
 
 	if qt.subdivided {
 		img = drawQt(img, qt.topLeft, width, height)
 		img = drawQt(img, qt.topRight, width, height)
 		img = drawQt(img, qt.bottomLeft, width, height)
 		img = drawQt(img, qt.bottomRight, width, height)
-	}
-
-	for _, pt := range qt.points {
-		img = drawPoint(img, pt, width, height)
 	}
 
 	return img
@@ -41,15 +42,15 @@ func drawBBox(img draw.Image, bbox *BBox, width, height float64) draw.Image {
 
 	// Shift the centre of the bbox to the top left which is where
 	// we will start drawing the rectangle
-	shiftedX := newX - bbox.Width/2
-	shiftedY := newY - bbox.Height/2
+	shiftedX := newX - bbox.width/2
+	shiftedY := newY - bbox.height/2
 
 	gc := draw2dimg.NewGraphicContext(img)
 	gc.SetFillColor(color.Black)
 	gc.SetStrokeColor(color.RGBA{0xff, 0xff, 0xff, 0xff})
 	gc.SetLineWidth(1)
 
-	draw2dkit.Rectangle(gc, shiftedX, shiftedY, shiftedX+bbox.Width, shiftedY+bbox.Height)
+	draw2dkit.Rectangle(gc, shiftedX, shiftedY, shiftedX+bbox.width, shiftedY+bbox.height)
 	gc.FillStroke()
 	gc.Fill()
 

@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const bboxSize = 1000
+const bboxSize = 200
 const numPoints = 100
 const capacity = 8
 const outputFilename string = "output.png"

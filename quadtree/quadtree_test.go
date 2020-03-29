@@ -28,7 +28,7 @@ func TestNewQuadTree(t *testing.T) {
 	rs := qt.GetPointsWithin(r)
 
 	if len(rs) != pointsToInsert {
-		t.Log(qt.CountAll())
+		t.Log(qt.CountPoints())
 		t.Errorf("Expected there to be %v points but found %v", pointsToInsert, len(rs))
 	}
 }
