@@ -18,15 +18,15 @@ func main() {
 
 	for i := 0; i < numPoints; i++ {
 		qt.Insert(&quadtree.Point{
-			X: randomNumber(),
-			Y: randomNumber(),
+			X: randomCoordinate(bboxSize),
+			Y: randomCoordinate(bboxSize),
 		})
 	}
 
 	DrawQuadtree(qt, outputFilename)
 }
 
-func randomNumber() float64 {
+func randomCoordinate(bboxSize float64) float64 {
 	val := rand.Float64()
 	if rand.Float64() <= 0.5 {
 		val = val * -1

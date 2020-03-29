@@ -8,6 +8,10 @@ type BBox struct {
 
 // NewBBox takes xMin,xMax,yMin,yMax and returns a new bounding box
 func NewBBox(xMin, xMax, yMin, yMax float64) *BBox {
+	if xMax < xMin || yMax < yMin {
+		return nil
+	}
+
 	return &BBox{
 		xMin: xMin,
 		xMax: xMax,

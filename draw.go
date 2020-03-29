@@ -18,8 +18,7 @@ func DrawQuadtree(qt *quadtree.QuadTree, outputFilename string) {
 
 	result := drawQt(dest, qt, width, height)
 
-	points := qt.GetPointsWithin(&bbox)
-	for _, pt := range points {
+	for _, pt := range qt.GetPointsWithin(&bbox) {
 		result = drawPoint(result, *pt, width, height)
 	}
 
