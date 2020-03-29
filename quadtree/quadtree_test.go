@@ -15,13 +15,13 @@ func TestNewQuadTree(t *testing.T) {
 	var bboxSize float64 = 200
 	var pointsToInsert int = 1000
 
-	r := quadtree.NewBBox(0, 0, bboxSize, bboxSize)
+	r := quadtree.NewBBox(-bboxSize, bboxSize, -bboxSize, bboxSize)
 	qt := quadtree.NewQuadTree(r, capacity)
 
 	for i := 0; i < pointsToInsert; i++ {
 		qt.Insert(&quadtree.Point{
-			X: randomNumber(bboxSize / 2),
-			Y: randomNumber(bboxSize / 2),
+			X: randomNumber(bboxSize),
+			Y: randomNumber(bboxSize),
 		})
 	}
 

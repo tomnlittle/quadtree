@@ -2,23 +2,33 @@ package quadtree
 
 // BBox defines a bounding box
 type BBox struct {
-	xMin, xMax       float64
-	yMin, yMax       float64
-	CentreX, CentreY float64
-	width, height    float64
+	xMin, xMax float64
+	yMin, yMax float64
 }
 
-func NewBBox(centreX, centreY, width, height float64) *BBox {
+// NewBBox takes xMin,xMax,yMin,yMax and returns a new bounding box
+func NewBBox(xMin, xMax, yMin, yMax float64) *BBox {
 	return &BBox{
-		xMin:    centreX - width/2,
-		xMax:    centreX + width/2,
-		yMax:    centreY + height/2,
-		yMin:    centreY - height/2,
-		CentreX: centreX,
-		CentreY: centreY,
-		width:   width,
-		height:  height,
+		xMin: xMin,
+		xMax: xMax,
+		yMin: yMin,
+		yMax: yMax,
 	}
+}
+
+// Width - returns the width of the bbox
+func (b BBox) Width() float64 {
+	return b.xMax - b.xMin
+}
+
+// Height returns the height of the bbox
+func (b BBox) Height() float64 {
+	return b.yMax - b.yMin
+}
+
+// Centre returns the (x,y) centre of the bbox
+func (b BBox) Centre() (x, y float64) {
+	return b.xMin + b.Width()/2, b.yMin + b.Height()/2
 }
 
 // ContainsPoint checks whether the provided point is within

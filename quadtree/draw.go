@@ -10,8 +10,8 @@ import (
 )
 
 func DrawQuadtree(qt *QuadTree, outputFilename string) {
-	width := qt.bbox.width
-	height := qt.bbox.height
+	width := qt.bbox.Width()
+	height := qt.bbox.Height()
 	dest := image.NewRGBA(image.Rect(0, 0, int(width), int(height)))
 
 	result := drawQt(dest, qt, width, height)
@@ -38,19 +38,20 @@ func drawQt(img draw.Image, qt *QuadTree, width, height float64) draw.Image {
 }
 
 func drawBBox(img draw.Image, bbox *BBox, width, height float64) draw.Image {
-	newX, newY := toCanvasCoordinates(bbox.CentreX, bbox.CentreY, width, height)
+	cX, cY := bbox.Centre()
+	newX, newY := toCanvasCoordinates(cX, cY, width, height)
 
 	// Shift the centre of the bbox to the top left which is where
 	// we will start drawing the rectangle
-	shiftedX := newX - bbox.width/2
-	shiftedY := newY - bbox.height/2
+	shiftedX := newX - bbox.Width()/2
+	shiftedY := newY - bbox.Height()/2
 
 	gc := draw2dimg.NewGraphicContext(img)
 	gc.SetFillColor(color.Black)
 	gc.SetStrokeColor(color.RGBA{0xff, 0xff, 0xff, 0xff})
 	gc.SetLineWidth(1)
 
-	draw2dkit.Rectangle(gc, shiftedX, shiftedY, shiftedX+bbox.width, shiftedY+bbox.height)
+	draw2dkit.Rectangle(gc, shiftedX, shiftedY, shiftedX+bbox.Width(), shiftedY+bbox.Height())
 	gc.FillStroke()
 	gc.Fill()
 

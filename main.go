@@ -14,7 +14,7 @@ const outputFilename string = "output.png"
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	qt := quadtree.NewQuadTree(quadtree.NewBBox(0, 0, bboxSize, bboxSize), capacity)
+	qt := quadtree.NewQuadTree(quadtree.NewBBox(-bboxSize, bboxSize, -bboxSize, bboxSize), capacity)
 
 	for i := 0; i < numPoints; i++ {
 		qt.Insert(&quadtree.Point{
@@ -31,5 +31,5 @@ func randomNumber() float64 {
 	if rand.Float64() <= 0.5 {
 		val = val * -1
 	}
-	return val * bboxSize / 2
+	return val * bboxSize
 }

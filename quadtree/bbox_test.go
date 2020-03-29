@@ -16,7 +16,7 @@ func TestContains(t *testing.T) {
 			Description:   "Base Case - Point is the centre of the BBox",
 			CorrectResult: true,
 			Point:         quadtree.Point{0, 0},
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
+			BBox:          *quadtree.NewBBox(-100, 100, -100, 100),
 		},
 		{
 			Description:   "Edge Case - Point is at (0,0) and BBox has no size",
@@ -28,43 +28,37 @@ func TestContains(t *testing.T) {
 			Description:   "Edge Case - Point is at the top right of the BBox",
 			CorrectResult: true,
 			Point:         quadtree.Point{50, 50},
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
+			BBox:          *quadtree.NewBBox(-50, 50, -50, 50),
 		},
 		{
 			Description:   "Edge Case - Point is at the top left of the BBox",
 			CorrectResult: true,
 			Point:         quadtree.Point{-50, 50},
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
+			BBox:          *quadtree.NewBBox(-50, 50, -50, 50),
 		},
 		{
 			Description:   "Edge Case - Point is at the bottom left of the BBox",
 			CorrectResult: true,
 			Point:         quadtree.Point{-50, -50},
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
+			BBox:          *quadtree.NewBBox(-50, 50, -50, 50),
 		},
 		{
 			Description:   "Edge Case - Point is at the bottom right of the BBox",
 			CorrectResult: true,
 			Point:         quadtree.Point{50, -50},
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
+			BBox:          *quadtree.NewBBox(-50, 50, -50, 50),
 		},
 		{
 			Description:   "Edge Case - Point slightly outside of BBox",
 			CorrectResult: false,
 			Point:         quadtree.Point{50, -50.1},
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
-		},
-		{
-			Description:   "Edge Case - BBox is not at (0,0)",
-			CorrectResult: false,
-			Point:         quadtree.Point{-100, -100},
-			BBox:          *quadtree.NewBBox(100, 100, 100, 100),
+			BBox:          *quadtree.NewBBox(-50, 50, -50, 50),
 		},
 		{
 			Description:   "Edge Case - BBox shape is not square",
 			CorrectResult: true,
 			Point:         quadtree.Point{100, 5},
-			BBox:          *quadtree.NewBBox(100, 100, 10, 190.6),
+			BBox:          *quadtree.NewBBox(100, 100, -10, 190.6),
 		},
 	} {
 		if tc.BBox.ContainsPoint(&tc.Point) != tc.CorrectResult {
@@ -90,26 +84,20 @@ func TestIntersects(t *testing.T) {
 		{
 			Description:   "Base Case - BBOX's do not intersect",
 			CorrectResult: false,
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
-			InputBBox:     *quadtree.NewBBox(300, 300, 100, 100),
-		},
-		{
-			Description:   "Edge Case - BBOX's have overlapping boundaries",
-			CorrectResult: true,
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
-			InputBBox:     *quadtree.NewBBox(100, 0, 100, 100),
+			BBox:          *quadtree.NewBBox(-50, 50, -50, 50),
+			InputBBox:     *quadtree.NewBBox(-100, -51, -100, -51),
 		},
 		{
 			Description:   "Edge Case - BBOX's do not have overlapping boundaries",
 			CorrectResult: false,
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
+			BBox:          *quadtree.NewBBox(-50, 50, -50, 50),
 			InputBBox:     *quadtree.NewBBox(101, 0, 100, 100),
 		},
 		{
 			Description:   "Edge Case - BBOX's overlap at a corner",
 			CorrectResult: true,
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
-			InputBBox:     *quadtree.NewBBox(100, 100, 100, 100),
+			BBox:          *quadtree.NewBBox(-50, 50, -50, 50),
+			InputBBox:     *quadtree.NewBBox(-100, -49, -100, -49),
 		},
 	} {
 		if tc.BBox.IntersectsBBox(&tc.InputBBox) != tc.CorrectResult {
@@ -133,16 +121,16 @@ func TestContainedBy(t *testing.T) {
 			InputBBox:     *quadtree.NewBBox(0, 0, 0, 0),
 		},
 		{
-			Description:   "Base Case - Input BBox is smaller than BBox",
+			Description:   "Base Case - Input BBox is inside BBox",
 			CorrectResult: true,
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
-			InputBBox:     *quadtree.NewBBox(0, 0, 99, 99),
+			BBox:          *quadtree.NewBBox(-100, 100, -100, 100),
+			InputBBox:     *quadtree.NewBBox(-99, 99, -99, 99),
 		},
 		{
 			Description:   "Base Case - Input BBox is larger than BBox",
 			CorrectResult: false,
-			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
-			InputBBox:     *quadtree.NewBBox(0, 0, 101, 101),
+			BBox:          *quadtree.NewBBox(-100, 100, -100, 100),
+			InputBBox:     *quadtree.NewBBox(-101, 101, -101, 101),
 		},
 	} {
 		if tc.BBox.ContainsBBox(&tc.InputBBox) != tc.CorrectResult {

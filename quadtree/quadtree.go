@@ -98,31 +98,31 @@ func (q QuadTree) insertIntoSubdivisions(p *Point) bool {
 
 func (q *QuadTree) subdivide() {
 	q.topLeft = NewQuadTree(NewBBox(
-		q.bbox.CentreX-q.bbox.width/4,
-		q.bbox.CentreY+q.bbox.height/4,
-		q.bbox.width/2,
-		q.bbox.height/2,
+		q.bbox.xMin,
+		q.bbox.xMax-q.bbox.Width()/2,
+		q.bbox.yMin+q.bbox.Height()/2,
+		q.bbox.yMax,
 	), q.capacity)
 
 	q.topRight = NewQuadTree(NewBBox(
-		q.bbox.CentreX+q.bbox.width/4,
-		q.bbox.CentreY+q.bbox.height/4,
-		q.bbox.width/2,
-		q.bbox.height/2,
+		q.bbox.xMin+q.bbox.Width()/2,
+		q.bbox.xMax,
+		q.bbox.yMin+q.bbox.Height()/2,
+		q.bbox.yMax,
 	), q.capacity)
 
 	q.bottomLeft = NewQuadTree(NewBBox(
-		q.bbox.CentreX-q.bbox.width/4,
-		q.bbox.CentreY-q.bbox.height/4,
-		q.bbox.width/2,
-		q.bbox.height/2,
+		q.bbox.xMin,
+		q.bbox.xMax-q.bbox.Width()/2,
+		q.bbox.yMin,
+		q.bbox.yMax-q.bbox.Height()/2,
 	), q.capacity)
 
 	q.bottomRight = NewQuadTree(NewBBox(
-		q.bbox.CentreX+q.bbox.width/4,
-		q.bbox.CentreY-q.bbox.height/4,
-		q.bbox.width/2,
-		q.bbox.height/2,
+		q.bbox.xMin+q.bbox.Width()/2,
+		q.bbox.xMax,
+		q.bbox.yMin,
+		q.bbox.yMax-q.bbox.Height()/2,
 	), q.capacity)
 
 	q.subdivided = true
