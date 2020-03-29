@@ -1,7 +1,6 @@
 package quadtree
 
-// BBox defines a region of either points or regions
-// in the quadtree
+// BBox defines a bounding box
 type BBox struct {
 	xMin, xMax float64
 	yMin, yMax float64
@@ -24,27 +23,27 @@ func NewBBox(centreX, centreY, width, height float64) *BBox {
 	}
 }
 
-// Contains checks whether the provided point is within
+// ContainsPoint checks whether the provided point is within
 // the bounding box
-func (b BBox) Contains(p *Point) bool {
+func (b BBox) ContainsPoint(p *Point) bool {
 	return p.X <= b.xMax &&
 		p.X >= b.xMin &&
 		p.Y <= b.yMax &&
 		p.Y >= b.yMin
 }
 
-// Intersects checks if the bbox intersects with the second
-// bounding box
-func (b BBox) Intersects(b2 *BBox) bool {
-	return b.yMax >= b2.yMin && b2.yMax >= b.yMin &&
-		b.xMax >= b2.xMin && b2.xMax >= b.xMin
+// ContainsBBox checks if the current bbox is entirely
+// within the second bbox
+func (b BBox) ContainsBBox(b2 *BBox) bool {
+	return b.xMin <= b2.xMin &&
+		b.xMax >= b2.xMax &&
+		b.yMin <= b2.yMin &&
+		b.yMax >= b2.yMax
 }
 
-// ContainedBy checks if the current bbox is entirely
-// within the second bbox
-func (b BBox) ContainedBy(b2 *BBox) bool {
-	return b2.CentreX-b2.Width <= b.CentreX-b.Width &&
-		b2.CentreX+b2.Width >= b.CentreX+b.Width &&
-		b2.CentreY-b2.Height <= b.CentreY-b.Height &&
-		b2.CentreY+b2.Height >= b.CentreY+b.Height
+// IntersectsBBox checks if the bbox intersects with the second
+// bounding box
+func (b BBox) IntersectsBBox(b2 *BBox) bool {
+	return b.yMax >= b2.yMin && b2.yMax >= b.yMin &&
+		b.xMax >= b2.xMin && b2.xMax >= b.xMin
 }

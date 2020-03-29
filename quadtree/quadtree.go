@@ -35,7 +35,7 @@ func (q QuadTree) CountAll() int {
 }
 
 func (q QuadTree) GetPointsWithin(r *BBox) Points {
-	if !q.rootRegion.Intersects(r) {
+	if !q.rootRegion.IntersectsBBox(r) {
 		return Points{}
 	}
 
@@ -47,13 +47,13 @@ func (q QuadTree) GetPointsWithin(r *BBox) Points {
 		return found
 	}
 
-	if q.rootRegion.ContainedBy(r) {
+	if r.ContainsBBox(q.rootRegion) {
 		return q.points
 	}
 
 	found := Points{}
 	for _, p := range q.points {
-		if r.Contains(p) {
+		if r.ContainsPoint(p) {
 			found = append(found, p)
 		}
 	}
@@ -62,7 +62,7 @@ func (q QuadTree) GetPointsWithin(r *BBox) Points {
 
 // Insert adds a point to the quadtree
 func (q *QuadTree) Insert(p *Point) bool {
-	if !q.rootRegion.Contains(p) {
+	if !q.rootRegion.ContainsPoint(p) {
 		return false
 	}
 

@@ -67,9 +67,9 @@ func TestContains(t *testing.T) {
 			BBox:          *quadtree.NewBBox(100, 100, 10, 190.6),
 		},
 	} {
-		if tc.BBox.Contains(&tc.Point) != tc.CorrectResult {
+		if tc.BBox.ContainsPoint(&tc.Point) != tc.CorrectResult {
 			t.Log(tc.Description)
-			t.Errorf("Expected Contains to return %v but got %v instead", tc.CorrectResult, tc.BBox.Contains(&tc.Point))
+			t.Errorf("Expected Contains to return %v but got %v instead", tc.CorrectResult, tc.BBox.ContainsPoint(&tc.Point))
 		}
 	}
 }
@@ -112,9 +112,9 @@ func TestIntersects(t *testing.T) {
 			InputBBox:     *quadtree.NewBBox(100, 100, 100, 100),
 		},
 	} {
-		if tc.BBox.Intersects(&tc.InputBBox) != tc.CorrectResult {
+		if tc.BBox.IntersectsBBox(&tc.InputBBox) != tc.CorrectResult {
 			t.Log(tc.Description)
-			t.Errorf("Expected Intersects to return %v but got %v instead", tc.CorrectResult, tc.BBox.Intersects(&tc.InputBBox))
+			t.Errorf("Expected Intersects to return %v but got %v instead", tc.CorrectResult, tc.BBox.IntersectsBBox(&tc.InputBBox))
 		}
 	}
 }
@@ -134,20 +134,20 @@ func TestContainedBy(t *testing.T) {
 		},
 		{
 			Description:   "Base Case - Input BBox is smaller than BBox",
-			CorrectResult: false,
+			CorrectResult: true,
 			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
 			InputBBox:     *quadtree.NewBBox(0, 0, 99, 99),
 		},
 		{
 			Description:   "Base Case - Input BBox is larger than BBox",
-			CorrectResult: true,
+			CorrectResult: false,
 			BBox:          *quadtree.NewBBox(0, 0, 100, 100),
 			InputBBox:     *quadtree.NewBBox(0, 0, 101, 101),
 		},
 	} {
-		if tc.BBox.ContainedBy(&tc.InputBBox) != tc.CorrectResult {
+		if tc.BBox.ContainsBBox(&tc.InputBBox) != tc.CorrectResult {
 			t.Log(tc.Description)
-			t.Errorf("Expected ContainedBy to return %v but got %v instead", tc.CorrectResult, tc.BBox.ContainedBy(&tc.InputBBox))
+			t.Errorf("Expected ContainedBy to return %v but got %v instead", tc.CorrectResult, tc.BBox.ContainsBBox(&tc.InputBBox))
 		}
 	}
 }
